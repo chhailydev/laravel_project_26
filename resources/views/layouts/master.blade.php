@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="{{ asset("fonts/css/solid.min.css")}}">
     <link rel="stylesheet" href="{{ asset("fonts/css/all.min.css")}}">
     <link rel="stylesheet" href="{{ asset("fonts/css/fontawesome.min.css")}}">
+    <link rel="stylesheet" href="{{ asset("css/global.css")}}">
+    <link rel="stylesheet" href="{{ asset("css/login.css")}}">
     <title>Student Registration</title>
 </head>
 <body>

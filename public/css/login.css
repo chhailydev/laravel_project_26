@@ -1,0 +1,54 @@
+
+.container-float{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 98%;
+    margin: auto;
+}
+
+video{
+    width: 100%;
+    height: 80%;
+}
+
+.login-title{
+    text-align: center;
+    font-size: 3.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    filter: drop-shadow(0 0 0.75rem rgba(135, 207, 235, 0.521));
+}
+.login-sub-title{
+    text-transform: uppercase;
+    color: skyblue;
+    filter: drop-shadow(0 0 0.75rem rgba(135, 207, 235, 0.555));
+    font-size: 3.3rem;
+    text-align: center;
+    padding: 10px;
+}
+
+form{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80%;
+    height: 92%;
+    margin: auto;
+}
+.fa-envelope{
+    font-size: 21px;
+    position: relative;
+    top: 42px;
+    left: 15px;
+    color: #727070;
+}
+.fa-lock{
+    font-size: 21px;
+    position: relative;
+    top: 42px;
+    left: 15px;
+    color: #727070;
+}
