@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('students', function (Blueprint $table) {
             $table->id("id")->autoIncrement();
+            $table->binary('profile');
             $table->string("card_id");
             $table->string("firstname");
             $table->string("middle_name");
             $table->string("lastname");
             $table->string("email");
-            $table->string("password");
             $table->date("dob");
             $table->string("gender");
             $table->string("phone");
