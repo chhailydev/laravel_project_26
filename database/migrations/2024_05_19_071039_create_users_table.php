@@ -36,7 +36,7 @@ return new class extends Migration
             $table->integer('last_activity')->index();
         });
     }
-
+ 
     /**
      * Reverse the migrations.
      */
@@ -46,4 +46,4 @@ return new class extends Migration
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
     }
-};
+}; 
