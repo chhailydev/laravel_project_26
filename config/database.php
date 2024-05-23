@@ -114,7 +114,7 @@ return [
             'host'           => env('DB_HOST', 'localhost'),
             'port'           => env('DB_PORT', '1521'),
             'database'       => env('DB_DATABASE', 'orcl'),
-            'username'       => env('DB_USERNAME', 'chhaily1'),
+            'username'       => env('DB_USERNAME', 'chhaily2'),
             'password'       => env('DB_PASSWORD', 'asdf'),
             'charset'        => env('DB_CHARSET', 'AL32UTF8'),
             'prefix'         => '',

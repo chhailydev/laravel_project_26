@@ -5694,16 +5694,16 @@
         },
         {
             "name": "yajra/laravel-oci8",
-            "version": "v11.2.3",
+            "version": "v11.2.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yajra/laravel-oci8.git",
-                "reference": "1c0b3e3f9bb25790ec5fee790a425cdcdc43766d"
+                "reference": "4807f6b7ac71184a9e46ccef22ca6152d1270bae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yajra/laravel-oci8/zipball/1c0b3e3f9bb25790ec5fee790a425cdcdc43766d",
-                "reference": "1c0b3e3f9bb25790ec5fee790a425cdcdc43766d",
+                "url": "https://api.github.com/repos/yajra/laravel-oci8/zipball/4807f6b7ac71184a9e46ccef22ca6152d1270bae",
+                "reference": "4807f6b7ac71184a9e46ccef22ca6152d1270bae",
                 "shasum": ""
             },
             "require": {
@@ -5761,7 +5761,7 @@
             ],
             "support": {
                 "issues": "https://github.com/yajra/laravel-oci8/issues",
-                "source": "https://github.com/yajra/laravel-oci8/tree/v11.2.3"
+                "source": "https://github.com/yajra/laravel-oci8/tree/v11.2.5"
             },
             "funding": [
                 {
@@ -5777,7 +5777,7 @@
                     "type": "patreon"
                 }
             ],
-            "time": "2024-05-07T07:07:39+00:00"
+            "time": "2024-05-22T05:07:54+00:00"
         },
         {
             "name": "yajra/laravel-pdo-via-oci8",
