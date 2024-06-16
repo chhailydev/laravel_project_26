@@ -10,3 +10,4 @@
 <link rel="stylesheet" href="{{ asset('templates/vendor/owl-carousel/owl.carousel.css')}}">
 <link rel="stylesheet" href="{{ asset('templates/vendor/nouislider/nouislider.min.css')}}">
 <link rel="stylesheet" href="{{ asset('templates/css/style.css')}}">
+<link rel="stylesheet" href="{{ asset('fonts/css/fontawesome.min.css')}}">
