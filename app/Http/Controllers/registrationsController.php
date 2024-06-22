@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\StudentModel;
 use DateTime;
 use Illuminate\Support\Facades\DB;
+use PDO;
 use PhpParser\Node\Stmt\TryCatch;
 
 class registrationsController extends Controller
@@ -16,83 +17,69 @@ class registrationsController extends Controller
         return view('dashboard.add_student', compact('major'));
     }
 
-    public function RegisterStudent(Request $request){
+    public function StudentRegister(Request $req)
+{
+    // Sample data for testing
+    $nationality = $req->nationality;
+    $kh_name = $req->kh_name;
+    $address_info = json_encode([
+        'current_address' => $req->current_address,
+        'address_name' => $req->address_name,
+        'house_number' => $req->house_number,
+        'street' => $req->street,
+        'sangkat' => $req->sangkat,
+        'khan' => $req->khan,
+    ]);
+    $created_at = date('Y-m-d');
+    $picture = null; // Binary data for the picture, set to null for testing
+    if($req->has('profile_picture')){
+        $image = $req->file('profile_picture');
+        $picture = file_get_contents($image->getRealPath());
+    }
 
-            $kh_name = $request->kh_name;
-            $latin_name = $request->latin_name;
-            $gender = $request->gender;
-            $dob = $request->DOB;
-            $phone = $request->phone;
-            $email = $request->email;
-            $program = $request->program;
-            $major = intval($request->major);
-            $degree = $request->degree;
-            $shift = $request->shift;
-            $id_passport = intval($request->id_passport);
-            $nationality = intval($request->nationality);
-            $country = $request->country;
-            $guardian_ph_number = $request->guardian_ph_number;
+    $family_info = json_encode([
+        "father" => [
+            'username' => $req->father_name,
+            'age' => $req->father_age, // Ensure this is a number
+            'nationality' => $req->nationality,
+            'country' => $req->country,
+            'occupation' => $req->father_occupation,
+        ],
+        "mother" => [
+            'username' => $req->mother_name,
+            'age' => $req->mother_age, // Ensure this is a number
+            'nationality' => $req->nationality,
+            'country' => $req->country,
+            'occupation' => $req->mother_occupation,
+        ]
+    ]);
+    $guardian_ph_number = $req->gphone;
+    $email = $req->email;
+    $shift = $req->shift;
+    $degree = $req->degree;
+    $country = $req->country;
+    $program = $req->program;
+    $latin_name = $req->latin_name;
+    $dob = date('Y-m-d H:i:s');
+    $major = intval($req->major);
+    $gender = $req->gender;
+    $education_info = json_encode([
+        'primary_school_name' => $req->primary_school_name,
+        'primary_city' => $req->primary_city,
+        'primary_school_year' => intval($req->primary_year), // Ensure this is a number
+        'secondary_school_name' => $req->secondary_school_name,
+        'secondary_city' => $req->secondary_city,
+        'secondary_school_year' => intval($req->secondary_year), // Ensure this is a number
+        'high_school_name' => $req->high_school_name,
+        'high_school_city' => $req->high_city,
+        'high_school_year' =>  intval($req->high_year), // Ensure this is a number
+    ]);
+    $updated_at = date('Y-m-d');
+    $phone_number = $req->phone;
+    $id_passport = intval($req->id_passport);
+    $id = 0;
 
-            $family_info = json_encode([
-                "father" => [
-                    'username' => $request->father_name,
-                    'age' => intval($request->father_age),
-                    'nationality' => $request->nationality,
-                    'country' => $request->country,
-                    'occaption' => $request->father_occupation,
-                ],
-                "mother" => [
-                    'username' => $request->mother_name,
-                    'age' => intval($request->mother_age),
-                    'nationality' => $request->nationality,
-                    'country' => $request->country,
-                    'occaption' => $request->mother_occupation,
-                ]
-            ]);
-
-            $address_info = json_encode([
-                'current_address' => $request->current_address,
-                'address_name' => $request->address_name,
-                'house_number' => $request->house_number,
-                'street' => $request->street,
-                'sangkat' => $request->sangkat,
-                'khan' => $request->khan,
-            ]);
-
-            $edu_background = json_encode([
-                'primary_school_name' => $request->primary_school_name,
-                'primary_city' => $request->primary_city,
-                'primary_school_year' => intval($request->primary_year),
-                'secondary_school_name' => $request->secondary_school_name,
-                'secondary_city' => $request->secondary_city,
-                'secondary_school_year' => intval($request->secondary_year),
-                'high_school_name' => $request->high_school_name,
-                'high_school_city' => $request->high_city,
-                'high_school_year' => intval($request->high_year),
-
-            ]);
-
-            $id = 0;
-            $date = new DateTime();
-            $created_at = $date->format('Y-m-d');
-            $updated_at = $date->format('Y-m-d');
-            
-            $filename = null;
-            $fileData = null;
-
-            if ($request->has('profile_picture')){
-                $image = $request->file('profile_picture');
-                $filename = time() . '_' . $image->getClientOriginalName();
-                // Store the image file
-                $path = $image->storeAs('student', $filename, 'public');
-
-                // Read the file contents to store in the databse
-                $fileData = file_get_contents($image->getRealPath());
-            }
-
-
-        try{
-
+    try {
             $pdo = DB::getPdo();
             $stmt = $pdo->prepare('
                 BEGIN STUDENTS_TAPI.INS(
@@ -120,35 +107,39 @@ class registrationsController extends Controller
                 END;
             ');
 
-            $stmt->bindParam(':p_NATIONALITY', $nationality);
-            $stmt->bindParam(':p_KH_NAME', $kh_name);
-            $stmt->bindParam(':p_ADDRESS_INFO', $address_info);
-            $stmt->bindParam(':p_CREATED_AT', $created_at);
-            $stmt->bindParam(':p_PICTURE', $fileData);
-            $stmt->bindParam(':p_FAMILY_INFO', $family_info);
-            $stmt->bindParam(':p_GURARDIAN_PHONE_NUMBER', $guardian_ph_number);
-            $stmt->bindParam(':p_EMAIL', $email);
-            $stmt->bindParam(':p_SHIFT', $shift);
-            $stmt->bindParam(':p_DEGREES', $degree);
-            $stmt->bindParam(':p_COUNTRY', $country);
-            $stmt->bindParam(':p_PROGRAMS', $program);
-            $stmt->bindParam(':p_LATIN_NAME', $latin_name);
-            $stmt->bindParam(':p_DOB', $dob);
-            $stmt->bindParam(':p_MAJOR_ID', $major);
-            $stmt->bindParam(':p_GENDER', $gender);
-            $stmt->bindParam(':p_EDUCATION_INFO', $edu_background);
-            $stmt->bindParam(':p_UPDATED_AT', $updated_at);
-            $stmt->bindParam(':p_ID', $id);
-            $stmt->bindParam(':p_PHONE_NUMBER', $phone);
-            $stmt->bindParam(':p_ID_PASSPORT', $id_passport);
+        $stmt->bindParam(':p_NATIONALITY', $nationality);
+        $stmt->bindParam(':p_KH_NAME', $kh_name);
+        $stmt->bindParam(':p_ADDRESS_INFO', $address_info);
+        $stmt->bindParam(':p_CREATED_AT', $created_at);
+        $stmt->bindParam(':p_PICTURE', $picture, \PDO::PARAM_LOB);
+        $stmt->bindParam(':p_FAMILY_INFO', $family_info);
+        $stmt->bindParam(':p_GURARDIAN_PHONE_NUMBER', $guardian_ph_number);
+        $stmt->bindParam(':p_EMAIL', $email);
+        $stmt->bindParam(':p_SHIFT', $shift);
+        $stmt->bindParam(':p_DEGREES', $degree);
+        $stmt->bindParam(':p_COUNTRY', $country);
+        $stmt->bindParam(':p_PROGRAMS', $program);
+        $stmt->bindParam(':p_LATIN_NAME', $latin_name);
+        $stmt->bindParam(':p_DOB', $dob);
+        $stmt->bindParam(':p_MAJOR_ID', $major);
+        $stmt->bindParam(':p_GENDER', $gender);
+        $stmt->bindParam(':p_EDUCATION_INFO', $education_info);
+        $stmt->bindParam(':p_UPDATED_AT', $updated_at);
+        $stmt->bindParam(':p_ID', $id);
+        $stmt->bindParam(':p_PHONE_NUMBER', $phone_number);
+        $stmt->bindParam(':p_ID_PASSPORT', $id_passport);
 
-            $stmt->execute();
+        $stmt->execute();
 
-            return redirect('/dashboard')->with(['msg' => 'Student registered successfully']);
-
-        }catch(\Exception $e){
-
-        }
-
+        return redirect('/dashboard')->with('success', 'Successfully');
+    } catch (\Exception $e) {
+        return redirect()->back()->withErrors(['error' => 'Failed to register student: '. $e->getMessage()]);
     }
+}
+
+public function getStudent(){
+    $student = DB::table('students')->get();
+    dd($student);
+}
+
 }

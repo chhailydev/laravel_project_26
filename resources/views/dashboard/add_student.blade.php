@@ -2,6 +2,18 @@
 
 @section('content')
 <div class="content-body">
+    @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if (session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+
     <form enctype="multipart/form-data" action="/register/student" method="POST">
         @csrf
         @method('POST')
@@ -313,7 +325,7 @@
                 {{-- end mother's info --}}
             </div>
             <div class="group-form mb-3">
-                <input type="number" name="guardain_ph_number" required placeholder="Guardian Phone Number" class="form-control">
+                <input type="number" name="gphone" required placeholder="Guardian Phone Number" class="form-control">
             </div>
             {{-- end family background --}}
             <button type="submit" id="submit_form" class="btn btn btn-primary">SUBMIT</button>

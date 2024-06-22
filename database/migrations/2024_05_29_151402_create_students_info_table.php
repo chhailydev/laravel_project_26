@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('degrees');
             $table->string('shift');
             $table->integer('id_passport');
-            $table->integer('nationality');
+            $table->string('nationality');
             $table->string('country');
             $table->binary('picture');
             $table->json('education_info');

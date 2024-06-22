@@ -14,12 +14,15 @@ Route::get('/welcome', function () {
 });
 
 
+Route::get('/gets', [registrationsController::class, 'getStudent']);
+Route::get('/test-insert', [registrationsController::class, 'testInsert']);
+
 Route::middleware([DashboardMiddleware::class])->group(function(){
     Route::get("/dashboard", [DashboardController::class, "index"])->name("dashboard");
     Route::post('/logout', [LoginPageController::class, 'logout'])->name("logout");
 
     Route::get('/add/student', [registrationsController::class, 'add_student']);
-    Route::post('/register/student', [registrationsController::class, 'RegisterStudent']);
+    Route::post('/register/student', [registrationsController::class, 'StudentRegister']);
 
     Route::get('/account', [LoginPageController::class, 'getAllAccount']);
     Route::get('/profile_image/{id}', [LoginPageController::class, 'serverProfileImage'])->name('profile_image');
