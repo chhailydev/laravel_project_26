@@ -39,16 +39,10 @@ class LoginPageController extends Controller
         $password = Hash::make($request->input('password'));
         $role_id = $request->input('role');
 
-        $filename = null;
         $fileData = null;
 
         if ($request->has('profile')) {
             $image = $request->file('profile');
-            $filename = time() . '_' . $image->getClientOriginalName();
-            // Store the image file
-            $path = $image->storeAs('student', $filename, 'public');
-
-            // Read the file contents to store in the databse
             $fileData = file_get_contents($image->getRealPath());
         }
 
@@ -74,12 +68,13 @@ class LoginPageController extends Controller
 
             $stmt->execute();
 
-            return redirect()->route('login')->with(['success' => 'Created new user with ID: ' . $p_id], 201);
+            return redirect('/dashboard/account')->with(['success' => 'Created new user with ID: ' . $p_id], 201);
     } 
 
     public function getAllAccount(){
         $accounts = DB::table('user_roles_view')->get();
-        return view('dashboard.user_account', compact('accounts'));
+        $role = DB::table('users_role')->get();
+        return view('dashboard2.user_accounts', compact('accounts', 'role'));
     }
 
     public function serverProfileImage($id){
