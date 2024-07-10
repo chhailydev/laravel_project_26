@@ -7,8 +7,15 @@
      @vite(['resources/css/app.css', 'resources/js/app.js'])
      @include('split.style')
     <title>Teavada Register</title>
+    <script>
+         if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+         } else {
+            document.documentElement.classList.remove('dark')
+         }
+    </script>
 </head>
-<body>
+<body class="bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
 
    {{-- navbar --}}
    @include('split.navbar')
@@ -18,7 +25,7 @@
    @include('split.sidebar')
    {{-- end sidebar --}}
 
-   <div class="p-4 sm:ml-64">
+   <div class="p-4 sm:ml-64 h-screen">
       @yield('content')
    </div>
 

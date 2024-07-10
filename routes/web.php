@@ -5,8 +5,10 @@ use App\Http\Controllers\LoginPageController;
 use App\Http\Controllers\majorController;
 use App\Http\Controllers\registrationsController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserAuditController;
 use App\Http\Middleware\AuthMiddleware;
 use App\Http\Middleware\DashboardMiddleware;
+use App\Http\Middleware\RoleMiddleware;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/add', [registrationsController::class, 'add_student_old']);
@@ -15,23 +17,30 @@ Route::get('/test-insert', [registrationsController::class, 'testInsert']);
 
 Route::middleware([DashboardMiddleware::class])->group(function(){
     Route::prefix('dashboard')->group(function(){
+
         Route::get('/list/students', [registrationsController::class, 'getStudent']);
         Route::get('profile/{id}', [registrationsController::class, 'getProfile'])->name('profile');
         Route::get('/add/student', [registrationsController::class, 'add_student']);
         Route::get('/update/form/{id}', [registrationsController::class, 'update_form']);
         Route::put('/update/student/{id}', [registrationsController::class, 'update_student']);
         Route::get('/view/student/{id}', [registrationsController::class, 'view_student']);
+        Route::delete('/delete/student/{id}', [registrationsController::class,'delete_student']);
 
-        Route::get("", [DashboardController::class, "index"])->name("dashboard");
+        Route::get("", [DashboardController::class, "index"])->name("dashboard")->middleware([RoleMiddleware::class]);
         Route::post('/logout', [LoginPageController::class, 'logout'])->name("logout");
 
         Route::post('/register/student', [registrationsController::class, 'StudentRegister']);
 
         Route::get('/account', [LoginPageController::class, 'getAllAccount']);
         Route::get('/profile_image/{id}', [LoginPageController::class, 'serverProfileImage'])->name('profile_image');
+        Route::get('/edit/account/{id}', [LoginPageController::class, 'edit_account']);
+        Route::put('/update/account/{id}', [LoginPageController::class, 'update_account']);
+        Route::delete('/delete/account/{id}', [LoginPageController::class, 'delete_account']);
 
         Route::get("/role", [RoleController::class, 'Roles']);
         Route::post('/create/role', [RoleController::class, 'create_role']);
+
+        Route::get('/user_audit', [UserAuditController::class, 'UserAudit']);
 
         Route::get("/register", [LoginPageController::class, 'registerPage']);
         Route::post("/register", [LoginPageController::class, 'createAccount'])->name("registerUser");

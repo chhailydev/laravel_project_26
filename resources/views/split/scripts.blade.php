@@ -1,3 +1,9 @@
 <script src="{{ asset('js/upload.js')}}"></script>
 <script src="https://unpkg.com/flowbite@latest/dist/flowbite.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+<script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+<script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
+<script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+{{-- <script src="{{ asset('js/chart.js')}}"></script> --}}
+<script src="{{ asset('js/dark_mode.js')}}"></script>
+<script src="{{ asset('js/update_profile.js')}}"></script>

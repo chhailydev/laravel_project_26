@@ -2,15 +2,20 @@
 
 @section('content')
 <div class="relative mt-[50px]">
-      <form enctype="multipart/form-data" action="/register/student" method="POST">
+      <form enctype="multipart/form-data" action="/dashboard/register/student" method="POST">
         @csrf
         @method('POST')
      <div class="container">
-        <h3 class="text-3xl font-medium pt-3 pb-5">STUDENT REGISTER FORM</h3>
+        <div class="flex items-center justify-between w-full">
+            <h3 class="text-3xl font-medium pt-3 pb-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">STUDENT REGISTER FORM</h3>
+            <a class="bg-gray-400 block w-[100px] rounded-sm text-center p-2 text-white hover:bg-gray-300" href="/dashboard/list/students">
+                Back
+            </a>
+        </div>
             <div class="group-form mb-3">
                 <div class="file-upload" id="file-upload">
                     <input type="file" name="profile_picture" id="file-input">
-                    <div id="upload-title">
+                    <div id="upload-title" class="text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
                         <svg class="w-9 h-9 text-gray-300 m-auto dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 24 24">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v9m-5 0H5a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1h-2M8 9l4-5 4 5m1 8h.01"/>
                         </svg>
@@ -20,7 +25,7 @@
                 </div>
             </div>
             {{-- program --}}
-            <h4 class="text-xl pt-3 pb-3 font-medium">Programs</h4>
+            <h4 class="text-xl pt-3 pb-3 font-medium text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">Programs</h4>
             <div class="flex w-full items-center justify-end">
                 <div class="w-[50%]">
                     <div class="group-form mb-3">
@@ -35,7 +40,7 @@
                     </div>
                 </div>
             </div>
-            <h4 class="text-xl pt-3 pb-3 font-medium">Degree</h4>
+            <h4 class="text-xl pt-3 pb-3 font-medium text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">Degree</h4>
             <div class="flex w-full items-center justify-end">
                 <div class="w-[50%]">
                     <div class="group-form mb-3">
@@ -51,7 +56,7 @@
                 </div>
             </div>
             {{-- Shift --}}
-            <h4 class="text-xl pt-3 pb-3 font-medium">Shifts</h4>
+            <h4 class="text-xl pt-3 pb-3 font-medium text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">Shifts</h4>
             <div class="w-full flex items-center justify-end">
                 <div class="w-[25%]">
                     <div class="group-form mb-3">
@@ -79,7 +84,7 @@
                 </div>
             </div>
             {{-- end shift --}}
-            <h4 class="text-xl font-medium pt-3 pb-3">Majors</h4>
+            <h4 class="text-xl font-medium pt-3 pb-3 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">Majors</h4>
             <div class="group-form mb-3">
                 <select name="major" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" id="">
                     @foreach ($major as $m)
@@ -90,7 +95,7 @@
             {{-- end program --}}
 
             {{-- Persoanl background --}}
-            <h4 class="text-xl font-medium pt-3 pb-3">Personal Background</h4>
+            <h4 class="text-xl font-medium pt-3 pb-3 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">Personal Background</h4>
             <div class="w-full flex items-center justify-end gap-3">
                 <div class="w-[33%]">
                     <div class="group-form mb-3">
@@ -152,7 +157,7 @@
                 <input type="text" name="current_address" required placeholder="Current Address" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
             </div>
 
-            <h4 class="text-xl font-medium pt-3 pb-3">Current Address in Phnom Penh</h4>
+            <h4 class="text-xl font-medium pt-3 pb-3 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">Current Address in Phnom Penh</h4>
             <div class="flex items-center justify-end gap-3">
                 <div class="w-[33%]">
                     <div class="group-form mb-3">
@@ -185,9 +190,9 @@
             </div>
             {{-- end personal background --}}
             {{-- Education background --}}
-            <h4 class="text-xl font-medium pt-3 pb-3">Education Background</h4>
-            <div class="flex items-center justify-end gap-3 pt-2 pb-2">
-                <div class="w-[33%]">
+            <h4 class="text-xl font-medium pt-3 pb-3 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">Education Background</h4>
+            <div class="flex items-center justify-end gap-3 pt-2 pb-2 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
+                <div class="w-[33%] ">
                     <h5 class="fs-4 pt-2">Primary School(Grade 1-6)</h5>
                 </div>
                 <div class="w-[33%]">
@@ -253,7 +258,7 @@
             </div>
             {{-- end education background --}}
             {{-- family background --}}
-            <h4 class="text-xl font-medium pt-3 pb-3">Family Background</h4>
+            <h4 class="text-xl font-medium pt-3 pb-3 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">Family Background</h4>
             <div class="flex items-center justify-center gap-3">
                 {{-- father's info --}}
                 <div class="w-[50%]">

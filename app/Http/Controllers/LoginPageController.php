@@ -71,10 +71,16 @@ class LoginPageController extends Controller
             return redirect('/dashboard/account')->with(['success' => 'Created new user with ID: ' . $p_id], 201);
     } 
 
-    public function getAllAccount(){
-        $accounts = DB::table('user_roles_view')->get();
+    public function getAllAccount(Request $request){
+        $query = $request->input('query');
         $role = DB::table('users_role')->get();
-        return view('dashboard2.user_accounts', compact('accounts', 'role'));
+
+        if($query){
+            $accounts = DB::table('user_details')->whereRaw('LOWER(useranme) LIKE ? ', ['%' . strtolower($query) . '%'])->paginate(8);
+        }else{
+            $accounts = DB::table('user_details')->paginate(8);
+        }
+        return view('dashboard2.user_accounts', compact('accounts', 'role', 'query'));
     }
 
     public function serverProfileImage($id){
@@ -88,35 +94,6 @@ class LoginPageController extends Controller
 
         abort(404);
     }
-
-    // public function registerUser(Request $request){
-    //     $username = $request->input("username");
-    //     $email = $request->input("email");
-    //     $password = Hash::make($request->input("password")); 
-
-    //     $validator = Validator::make($request->all(), [
-    //         'username' => 'required',
-    //         'email' => 'required|email',
-    //         'password' => 'required',
-    //     ]);
-
-    //     if($validator->fails()){
-    //         return redirect()->back()->withErrors($validator)->withInput();
-    //     }
-
-    //     $user = DB::table('users')->insert([
-    //         'name' => $username,
-    //         'email' => $email,
-    //         'password' => $password,
-    //     ]);
-
-    //     if($user){
-    //         return redirect()->route('dashboard')->with('success', 'User registered successfully');
-    //     }
-
-    //     return redirect()->route('login')->with('error', 'User registration failed');
-
-    // }
 
     public function login(Request $request){
         $email = $request->input("email");
@@ -170,6 +147,75 @@ class LoginPageController extends Controller
                 return 'application/vnd.ms-excel';
             default:
                 return 'application/octet-stream';
+        }
+    }
+
+    public function edit_account(Request $request, $id){
+        $user = DB::table('users_account')->where('id', $id)->first();
+        $role = DB::table('users_role')->get();
+        return view('dashboard2.edit_user', compact('user', 'role'));
+    }
+
+    public function update_account(Request $request, $id){
+            $currentDateTime = new DateTime();
+            $createdAt = $currentDateTime->format('Y-m-d');
+            $updatedAt = $currentDateTime->format('Y-m-d');
+
+        $validator = Validator::make($request->all(), [
+            'username' => 'required',
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+        
+        $username = $request->input('username');
+        $email = $request->input('email');
+        $password = Hash::make($request->input('password'));
+        $role_id = $request->input('role');
+
+        $fileData = null;
+
+        if ($request->has('profile')) {
+            $image = $request->file('profile');
+            $fileData = file_get_contents($image->getRealPath());
+        }
+
+
+
+            $pdo = DB::getPdo();
+            $stmt = $pdo->prepare('BEGIN USERS_ACCOUNT_TAPI.upd(:p_PROFILE, :p_PASSWORD, :p_CREATED_AT, :p_USERANME, :p_ROLE_ID, :p_UPDATED_AT ,:p_ID, :p_EMAIL); END;');
+
+            $p_status = 'publish';
+            $p_id = $id;
+
+            $stmt->bindParam(':p_PROFILE', $fileData, PDO::PARAM_LOB);
+            $stmt->bindParam(':p_PASSWORD', $password);
+            $stmt->bindParam(':p_CREATED_AT', $createdAt);
+            $stmt->bindParam(':p_USERANME', $username);
+            $stmt->bindParam(':p_ROLE_ID', $role_id);
+            $stmt->bindParam(':p_UPDATED_AT', $updatedAt);
+            $stmt->bindParam(':p_ID', $p_id);
+            $stmt->bindParam(':p_EMAIL', $email);
+
+            $stmt->execute();
+
+            return redirect('/dashboard/account')->with(['success' => 'Created new user with ID: ' . $p_id], 201);
+    }
+    public function delete_account(Request $request, $id)
+    {
+        try{
+            $pdo = DB::getPdo();
+            $stmt = $pdo->prepare(
+                "BEGIN USERS_ACCOUNT_TAPI.DEL(:p_ID); END;"
+            );
+            $stmt->bindParam(':p_ID', $id);
+            $stmt->execute();
+            return redirect('/dashboard/account');
+        }catch(\Exception $e){
+
         }
     }
 }

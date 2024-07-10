@@ -6,10 +6,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\StudentModel;
 use DateTime;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use PDO;
 use PhpParser\Node\Stmt\TryCatch;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class registrationsController extends Controller
 {
@@ -19,13 +20,15 @@ class registrationsController extends Controller
     }
 
     public function add_student(){
+        $id = Auth::id();
         $major = DB::table('majors')->get();
         return view('dashboard2.add_student', compact('major'));
     }
 
     public function StudentRegister(Request $req)
-{
-    // Sample data for testing
+    {
+
+    $userId = Auth::id();
     $nationality = $req->nationality;
     $kh_name = $req->kh_name;
     $address_info = json_encode([
@@ -36,8 +39,9 @@ class registrationsController extends Controller
         'sangkat' => $req->sangkat,
         'khan' => $req->khan,
     ]);
+
     $created_at = date('Y-m-d');
-    $picture = null; // Binary data for the picture, set to null for testing
+    $picture = null; 
     if($req->has('profile_picture')){
         $image = $req->file('profile_picture');
         $picture = file_get_contents($image->getRealPath());
@@ -46,14 +50,14 @@ class registrationsController extends Controller
     $family_info = json_encode([
         "father" => [
             'username' => $req->father_name,
-            'age' => $req->father_age, // Ensure this is a number
+            'age' => $req->father_age, 
             'nationality' => $req->nationality,
             'country' => $req->country,
             'occupation' => $req->father_occupation,
         ],
         "mother" => [
             'username' => $req->mother_name,
-            'age' => $req->mother_age, // Ensure this is a number
+            'age' => $req->mother_age, 
             'nationality' => $req->nationality,
             'country' => $req->country,
             'occupation' => $req->mother_occupation,
@@ -66,19 +70,19 @@ class registrationsController extends Controller
     $country = $req->country;
     $program = $req->program;
     $latin_name = $req->latin_name;
-    $dob = date('Y-m-d H:i:s');
+    $dob = $req->DOB;
     $major = intval($req->major);
     $gender = $req->gender;
     $education_info = json_encode([
         'primary_school_name' => $req->primary_school_name,
         'primary_city' => $req->primary_city,
-        'primary_school_year' => intval($req->primary_year), // Ensure this is a number
+        'primary_school_year' => intval($req->primary_year), 
         'secondary_school_name' => $req->secondary_school_name,
         'secondary_city' => $req->secondary_city,
-        'secondary_school_year' => intval($req->secondary_year), // Ensure this is a number
+        'secondary_school_year' => intval($req->secondary_year), 
         'high_school_name' => $req->high_school_name,
         'high_school_city' => $req->high_city,
-        'high_school_year' =>  intval($req->high_year), // Ensure this is a number
+        'high_school_year' =>  intval($req->high_year), 
     ]);
     $updated_at = date('Y-m-d');
     $phone_number = $req->phone;
@@ -104,6 +108,7 @@ class registrationsController extends Controller
                     :p_LATIN_NAME,
                     :p_DOB,
                     :p_MAJOR_ID,
+                    :p_USERID,
                     :p_GENDER,
                     :p_EDUCATION_INFO,
                     :p_UPDATED_AT,
@@ -128,6 +133,7 @@ class registrationsController extends Controller
         $stmt->bindParam(':p_LATIN_NAME', $latin_name);
         $stmt->bindParam(':p_DOB', $dob);
         $stmt->bindParam(':p_MAJOR_ID', $major);
+        $stmt->bindParam(':p_USERID', $userId);
         $stmt->bindParam(':p_GENDER', $gender);
         $stmt->bindParam(':p_EDUCATION_INFO', $education_info);
         $stmt->bindParam(':p_UPDATED_AT', $updated_at);
@@ -137,15 +143,44 @@ class registrationsController extends Controller
 
         $stmt->execute();
 
-        return redirect('/dashboard')->with('success', 'Successfully');
+        return redirect('/dashboard/list/students')->with('success', 'Successfully');
     } catch (\Exception $e) {
         return redirect()->back()->withErrors(['error' => 'Failed to register student: '. $e->getMessage()]);
     }
 }
 
-    public function getStudent(){
-        $student = DB::table('students')->paginate(10);
-        return view('dashboard2.list_students', compact('student'));
+    public function getStudent(Request $request){
+        $query = $request->input('search');
+
+        $start_date = $request->input('start_date');
+        $end_date = $request->input('end_date');
+
+        if($query){
+            $student = DB::table('students')
+                ->whereRaw('LOWER(kh_name) LIKE ?', ['%'. strtolower($query) .'%'])
+                ->orWhereRaw('LOWER(latin_name) LIKE ?', ['%' . strtolower($query) . '%'])
+                ->paginate(8);
+        }else{
+
+
+        // if($start_date){
+        //     $start_date = Carbon::parse($start_date)->format('Y-m-d H:i:s');
+        //     $student = DB::table('students')
+        //         ->whereDate('created_at', '>=', $start_date)
+        //         ->paginate(8);
+        // }
+
+        // if($end_date){
+        //     $start_date = Carbon::parse($start_date)->addDay()->format('Y-m-d H:i:s');
+        //     $student = DB::table('students')
+        //         ->whereDate('created_at', '<=', $end_date)
+        //         ->paginate(8);
+        // }
+            
+        $student = DB::table('students')->paginate(8);
+        }
+        
+        return view('dashboard2.list_students', compact('student', 'query', 'start_date', 'end_date'));
     }
 
     public function getProfile($id){
@@ -210,11 +245,14 @@ class registrationsController extends Controller
             "picture" => $student->picture
         ];
 
+        // dd($stu);
+
         return view('dashboard2.edit_student', compact('stu','major'));
     }
 
     public function update_student(Request $req, $id)
     {
+        $userId = Auth::id();
         $nationality = $req->nationality;
         $kh_name = $req->kh_name;
         $address_info = json_encode([
@@ -227,8 +265,8 @@ class registrationsController extends Controller
         ]);
         $created_at = date('Y-m-d');
         $picture = null; // Binary data for the picture, set to null for testing
-        if($req->has('profile_picture')){
-            $image = $req->file('profile_picture');
+        if($req->has('profile')){
+            $image = $req->file('profile');
             $picture = file_get_contents($image->getRealPath());
         }
 
@@ -292,6 +330,7 @@ class registrationsController extends Controller
                         :p_LATIN_NAME,
                         :p_DOB,
                         :p_MAJOR_ID,
+                        :p_USERID,
                         :p_GENDER,
                         :p_EDUCATION_INFO,
                         :p_UPDATED_AT,
@@ -316,6 +355,7 @@ class registrationsController extends Controller
             $stmt->bindParam(':p_LATIN_NAME', $latin_name);
             $stmt->bindParam(':p_DOB', $dob);
             $stmt->bindParam(':p_MAJOR_ID', $major);
+            $stmt->bindParam(':p_USERID', $userId);
             $stmt->bindParam(':p_GENDER', $gender);
             $stmt->bindParam(':p_EDUCATION_INFO', $education_info);
             $stmt->bindParam(':p_UPDATED_AT', $updated_at);
@@ -325,7 +365,7 @@ class registrationsController extends Controller
 
             $stmt->execute();
 
-            return redirect('/list/students')->with('success', 'Successfully');
+            return redirect('/dashboard/list/students')->with('success', 'Successfully');
         } catch (\Exception $e) {
             return redirect()->back()->withErrors(['error' => 'Failed to register student: '. $e->getMessage()]);
         }
@@ -356,5 +396,22 @@ class registrationsController extends Controller
             "picture" => $student->picture
         ];
         return view('dashboard2.view_student', compact(['stu', 'major']));
+    }
+
+    public function delete_student(Request $request, $id)
+    {
+        try{
+            $userId = Auth::id();
+            $pdo = DB::getPdo();
+            $stmt = $pdo->prepare(
+                "BEGIN STUDENTS_TAPI.DEL(:p_ID, :p_USERID); END;"
+            );
+            $stmt->bindParam(':p_ID', $id);
+            $stmt->bindParam(':p_USERID', $userId);
+            $stmt->execute();
+            return redirect('/dashboard/list/students')->with('success', 'Student deleted successfully');
+        }catch(\Exception $e){
+
+        }
     }
 }

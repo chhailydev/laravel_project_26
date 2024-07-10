@@ -18,26 +18,28 @@ fileUpload.addEventListener('dragleave', () => {
     fileUpload.style.backgroundColor = '#fff';
 });
 
-fileUpload.addEventListener('drop', (e) => {{
-    e.preventDefault();
-    fileInput.files =  e.dataTransfer.files;
-    fileUpload.style.backgroundColor = '#fff';
-    displayImagePreview(fileInput.files[0]);
-    title.style.display = 'none';
-}});
+fileUpload.addEventListener('drop', (e) => {
+    {
+        e.preventDefault();
+        fileInput.files = e.dataTransfer.files;
+        fileUpload.style.backgroundColor = '#fff';
+        displayImagePreview(fileInput.files[0]);
+        title.style.display = 'none';
+    }
+});
 
 fileInput.addEventListener('change', () => {
-    if(fileInput.files && fileInput.files[0]){
+    if (fileInput.files && fileInput.files[0]) {
         displayImagePreview(fileInput.files[0]);
         title.style.display = 'none';
     }
 })
 
 
-function displayImagePreview(file){
-    if(fileInput.files && fileInput.files[0] && fileInput.files[0] instanceof Blob){
+function displayImagePreview(file) {
+    if (fileInput.files && fileInput.files[0] && fileInput.files[0] instanceof Blob) {
         const reader = new FileReader();
-        reader.onload = function(e){
+        reader.onload = function (e) {
             filePreview.src = e.target.result;
             filePreview.style.display = 'block';
         }

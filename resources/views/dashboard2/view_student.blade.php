@@ -38,26 +38,26 @@
         <h2 class="text-xl text-center text-blue-800 font-medium">ADMINSSION SLIP</h2>
         <div class="flex items-center justify-between">
             <div>
-                <table>
+                <table class="text-blue-800">
                     <tr class="text-start font-medium">
                         <td>PROGRAM: </td>
-                        <td>{{ $stu['program']}}</td>
+                        <td class="uppercase">{{ $stu['program']}}</td>
                     </tr>
                     <tr class="text-start font-medium">
                         <td>DEGREE:</td>
-                        <td>{{ $stu['degree']}}</td>
+                        <td class="uppercase">{{ $stu['degree']}}</td>
                     </tr>
                     <tr class="text-start font-medium">
                         <td>MAJOR:</td>
                         @foreach ($major as $m)
                             @if($m->major_id == $stu['major_id'])
-                                <td>{{ $m->major_name }}</td>
+                                <td class="uppercase">{{ $m->major_name }}</td>
                             @endif
                         @endforeach
                     </tr>
                     <tr class="text-start font-medium">
                         <td>SHIFT</td>
-                        <td>{{ $stu['shift']}}</td>
+                        <td class="uppercase">{{ $stu['shift']}}</td>
                     </tr>
                 </table>
             </div>
